@@ -22,8 +22,10 @@ test('Add iMac to cart via hover', async ({ page }) => {
   await expect(addToCartBtn).toBeVisible();
 
   // 🔑 Critical wait (fixes flakiness)
-  await page.waitForFunction(() => window.cart !== undefined);
-
+  await page.waitForFunction(() => {
+    return /** @type {any} */ (window).cart !== undefined;
+  });
+  
   await addToCartBtn.click();
 
   await expect(page.locator('#notification-box-top'))
