@@ -10,7 +10,7 @@ test('Add iMac to cart via hover', async ({ page }) => {
   await page.getByRole('heading', { name: 'Top categories close' }).getByLabel('close').click()
   //await page.getByRole('link', { name: 'Printers & Scanners' }).click();
   await page.getByRole('textbox', { name: 'Search For Products' }).fill('Palm Treo Pro')
-  await page.locator('div.search-button > button.type-icon').click({force:true})
+  await page.getByRole('button', { name: 'Search' }).click({force:true})
 
   await page.waitForSelector('div.carousel-item.active')
   expect(page.locator('h1.h4')).toHaveText('Search - Palm Treo Pro')
@@ -30,7 +30,7 @@ test('Add iMac to cart via hover', async ({ page }) => {
       await page.waitForSelector("h1.h3")
       expect(page.locator('.breadcrumb>li.active')).toHaveText('Palm Treo Pro')
       const addToCartBtn = page.locator('button:visible', {hasText:'Add To Cart'})
-      const outOfStock = page.locator('button:visible', {hasText: 'Out Of Stock'})
+      const outOfStock = page.locator('button:visible', {hasText: 'Out Of Stock'}).first()
       if (await addToCartBtn.isVisible()) {
         console.log(`Product ${i + 1}: In Stock`);
         await addToCartBtn.click()
