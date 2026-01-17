@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { SimpleFormPage } from '../pages/SimpleFormPage';
+import { SimpleFormPage } from '../../pages/SimpleFormPage';
 
 
 test('Play with input boxes and button', async ({ page }) => {
