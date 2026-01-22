@@ -1,101 +1,107 @@
 //@ts-check
 const { test, expect } = require("@playwright/test");
-//const { CommonPage } = require("../../pages/CommonPage"); // Fixed casing to match actual file name
-const path = require('path');
-//const { CommonPage } = require("../../pages/CommonPage");
+const path = require("path");
 
-test('Handling upload single file', async ({page}) => {
-    // @ts-ignore
-    await page.goto('https://lambdatest.com/selenium-playground/upload-file-demo'); // Added await
-    // With this
- 
-    await page.setInputFiles('#file', path.join(__dirname, '../../TestFiles/testfile1.txt')); // Fixed path to ../../TestFiles
-    //await page.setInputFiles('#file', '/Users/ashishkumar/PlayWrightDemo1/TestFiles/testFile1.txt')
+/**
+ * Resolve test files relative to this test file
+ * CI-safe and cross-platform
+ */
+const fs = require("fs");
+const testFilesDir = path.resolve(__dirname, "../../TestFiles");
 
-    await expect(page.getByTestId('error')).toContainText('File type should be pdf, png, jpeg or jpg'); // Added await
+const txtFile = path.join(testFilesDir, "testfile1.txt");
+const jpgFile = path.join(testFilesDir, "testjpg.jpg");
 
-    await page.setInputFiles('#file', '/Users/ashishkumar/PlayWrightDemo1/TestFiles/testjpg.jpg');
+// Guardrails: fail fast if files are missing (helps CI debugging)
+if (!fs.existsSync(txtFile)) {
+  throw new Error(`Missing test file: ${txtFile}`);
+}
+if (!fs.existsSync(jpgFile)) {
+  throw new Error(`Missing test file: ${jpgFile}`);
+}
 
-    await expect(page.getByTestId('error')).toContainText('File Successfully Uploaded'); // Added await
 
+test("Handling upload single file", async ({ page }) => {
+  await page.goto("https://lambdatest.com/selenium-playground/upload-file-demo");
+
+  // Invalid file type
+  await page.setInputFiles("#file", txtFile);
+  await expect(page.getByTestId("error"))
+    .toContainText("File type should be pdf, png, jpeg or jpg");
+
+  // Valid file type
+  await page.setInputFiles("#file", jpgFile);
+  await expect(page.getByTestId("error"))
+    .toContainText("File Successfully Uploaded");
 });
 
-test('Handling upload multiple files', async ({page}) => { // Fixed typo: mutpile -> multiple
-    // @ts-ignore
-    await page.goto('https://blueimp.github.io/jQuery-File-Upload/'); // Added await
-    //await page.setInputFiles('input[type="file"]', ['/Users/ashishkumar/PlayWrightDemo1/TestFiles/testFile1.txt', '/Users/ashishkumar/PlayWrightDemo1/TestFiles/testjpg.jpg'] )
-    const files = [ path.resolve(__dirname, '../../TestFiles/testfile1.txt'), path.resolve(__dirname, '../../TestFiles/testjpg.jpg') ]; // Fixed path to ../../TestFiles
-    await page.setInputFiles('input[type="file"]', files);
-    const uploadedFile1Preview = page.locator('tbody.files tr')
-            .filter({
-                has: page.locator('p.name', { hasText: /testfile1\.txt/i })
-            });
+// ...existing code...
 
-    await expect(uploadedFile1Preview.locator('strong')).toContainText('File type not allowed'); // Added await
+test("Handling upload multiple files", async ({ page }) => {
+  await page.goto("https://blueimp.github.io/jQuery-File-Upload/");
 
-    const uploadedFile2Preview = page.locator('tbody.files tr')
-            .filter({
-                has: page.locator('p.name', { hasText: /testjpg\.jpg/i })
-            });
-            await expect(uploadedFile2Preview.locator('strong'))
-            .toBeEmpty(); // Added await
+  const [fileChooser] = await Promise.all([
+    page.waitForEvent("filechooser"),
+    page.locator('input[type="file"]').click(),
+  ]);
 
+  await fileChooser.setFiles([txtFile, jpgFile]);
+
+  const uploadedTxt = page.locator("tbody.files tr").filter({
+    has: page.locator("p.name", { hasText: /testfile1\.txt/i }),
+  });
+
+  await expect(uploadedTxt.locator("strong"))
+    .toContainText("File type not allowed");
+
+  const uploadedJpg = page.locator("tbody.files tr").filter({
+    has: page.locator("p.name", { hasText: /testjpg\.jpg/i }),
+  });
+
+  await expect(uploadedJpg.locator("strong"))
+    .toBeEmpty();
 });
 
+// ...existing code...
 
-test('Handling upload multiple files using filechooser method', async ({page}) => { // Fixed typo: mutpile -> multiple, filea -> files
-    // @ts-ignore
-    //const commonPage = new CommonPage(page);
-    await page.goto('https://blueimp.github.io/jQuery-File-Upload/'); // Added await
-    //await page.setInputFiles('input[type="file"]', ['/Users/ashishkumar/PlayWrightDemo1/TestFiles/testFile1.txt', '/Users/ashishkumar/PlayWrightDemo1/TestFiles/testjpg.jpg'] )
+test("Handling upload multiple files using filechooser method", async ({ page }) => {
+  await page.goto("https://blueimp.github.io/jQuery-File-Upload/");
 
-    //using filechooser
-    const [fileChooser] = await Promise.all([
-        page.waitForEvent('filechooser'),
-        page.locator('input[type="file"]').click()
-    ]);
+  const [fileChooser] = await Promise.all([
+    page.waitForEvent("filechooser"),
+    page.locator('input[type="file"]').click(),
+  ]);
 
-    await fileChooser.setFiles(['/Users/ashishkumar/PlayWrightDemo1/TestFiles/testfile1.txt', '/Users/ashishkumar/PlayWrightDemo1/TestFiles/testjpg.jpg']); // Fixed filename casing if needed
-    const uploadedFile1Preview = page.locator('tbody.files tr')
-            .filter({
-                has: page.locator('p.name', { hasText: /testfile1\.txt/i })
-            });
+  await fileChooser.setFiles([txtFile, jpgFile]);
 
-    await expect(uploadedFile1Preview.locator('strong')).toContainText('File type not allowed'); // Added await
+  const uploadedTxt = page.locator("tbody.files tr").filter({
+    has: page.locator("p.name", { hasText: /testfile1\.txt/i }),
+  });
 
-    const uploadedFile2Preview = page.locator('tbody.files tr')
-            .filter({
-                has: page.locator('p.name', { hasText: /testjpg\.jpg/i })
-            });
-            await expect(uploadedFile2Preview.locator('strong'))
-            .toBeEmpty(); // Added await
+  await expect(uploadedTxt.locator("strong"))
+    .toContainText("File type not allowed");
 
+  const uploadedJpg = page.locator("tbody.files tr").filter({
+    has: page.locator("p.name", { hasText: /testjpg\.jpg/i }),
+  });
+
+  await expect(uploadedJpg.locator("strong"))
+    .toBeEmpty();
 });
 
-test('Handling upload dynamic generated file', async ({page}) => {
-    // @ts-ignore
-    //const commonPage = new CommonPage(page);
-    await page.goto('https://blueimp.github.io/jQuery-File-Upload/'); // Added await
-    //await page.setInputFiles('input[type="file"]', ['/Users/ashishkumar/PlayWrightDemo1/TestFiles/testFile1.txt', '/Users/ashishkumar/PlayWrightDemo1/TestFiles/testjpg.jpg'] )
+test("Handling upload dynamically generated file", async ({ page }) => {
+  await page.goto("https://blueimp.github.io/jQuery-File-Upload/");
 
-    //using filechooser
-   await page.locator('input[type="file"]')
-    .setInputFiles({name: 'test.txt',
-        mimeType: 'text/plain',
-        buffer: Buffer.from('Hello Playwrightthis is test file')}); // Fixed buffer content if typo, but assuming it's intentional
-   
-    const uploadedFile1Preview = page.locator('tbody.files tr')
-            .filter({
-                has: page.locator('p.name', { hasText: /test\.txt/i })
-            });
+  await page.locator('input[type="file"]').setInputFiles({
+    name: "test.txt",
+    mimeType: "text/plain",
+    buffer: Buffer.from("Hello Playwright, this is a test file"),
+  });
 
-    await expect(uploadedFile1Preview.locator('strong')).toContainText('File type not allowed'); // Added await
+  const uploadedDynamicFile = page.locator("tbody.files tr").filter({
+    has: page.locator("p.name", { hasText: /test\.txt/i }),
+  });
 
-    // const uploadedFile2Preview = page.locator('tbody.files tr')
-    //         .filter({
-    //             has: page.locator('p.name', { hasText: /testjpg\.jpg/i })
-    //         });
-    //         await expect(uploadedFile2Preview.locator('strong'))
-    //         .toBeEmpty();
-
+  await expect(uploadedDynamicFile.locator("strong"))
+    .toContainText("File type not allowed");
 });
