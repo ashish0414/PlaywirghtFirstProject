@@ -9,6 +9,7 @@ test('Handling radio button', async ({page}) => {
     //click on male
     await page.getByText('Male').first().click()
     await page.getByTestId('buttoncheck').click({force:true})
+    await page.waitForLoadState()
     expect(page.getByText('Radio button \'Male\' is checked'))
     await expect(page.getByText('Male').first()).toBeChecked()
     await expect(page.getByText('Female').first()).not.toBeChecked()
@@ -40,6 +41,7 @@ test('Handling Drag and Drop', async ({page}) => {
     const dropLocation = page.getByTestId('mydropzone')
 
     await getDragElementByName('Draggable 1').dragTo(dropLocation)
+    page.waitForLoadState()
 
     expect(await getDraggedItemList()).toContain('Draggable 1')
 
@@ -48,6 +50,7 @@ test('Handling Drag and Drop', async ({page}) => {
 
     //Dargging Draggabel 2 now
     await getDragElementByName('Draggable 2').dragTo(dropLocation)
+    page.waitForLoadState()
 
     expect(await getDraggedItemList()).toContain('Draggable 1')
     expect(await getDraggedItemList()).toContain('Draggable 2')
@@ -65,7 +68,7 @@ test('Handling Drag and Drop demo 2', async ({page}) => {
 
     await dragEle.hover()
     await page.mouse.down()
-
+page.waitForLoadState()
     await dragToDropArea.hover()
     await page.mouse.up()
     expect(dragToDropArea).toHaveCount(1)

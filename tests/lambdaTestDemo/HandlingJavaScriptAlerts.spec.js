@@ -32,7 +32,8 @@ test('Handling JavaScript confirm Alerts', async ({ page }) => {
     page.on('dialog', async (dialog) => {
         console.log(`Dialog message: ${dialog.message()}`);
         expect(dialog.message()).toContain('I am a JS Confirm');
-        await dialog.dismiss();
+        //await dialog.dismiss();
+        
     })
     expect(page.getByText('You clicked: Cancel')).toBeTruthy()
 
@@ -49,7 +50,7 @@ test('Handling JavaScript prompt Alerts', async ({ page }) => {
         expect(dialog.message()).toContain('I am a JS prompt');
         await dialog.accept(promptInput);
     })
-
+    page.waitForLoadState()
     page.click('text=Click for JS Prompt');
     expect(page.getByText(`You entered: ${promptInput}`)).toBeTruthy()
 

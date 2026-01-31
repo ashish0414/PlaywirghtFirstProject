@@ -64,6 +64,7 @@ export class CheckboxDemoPage extends CommonPage {
     /** Toggle single checkbox (click once) */
     async toggleSingle() {
         await this.singleCheckbox.click();
+        await this.page.waitForLoadState()
     }
 
     /**
