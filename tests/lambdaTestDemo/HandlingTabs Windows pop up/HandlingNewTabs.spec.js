@@ -8,10 +8,12 @@ test('Handling new tabs', async({page, context}) => {
         context.waitForEvent('page'),
         page.getByRole('link', {name : 'Click Here'}).click()
     ])
-    await newPage.waitForLoadState()
+    await newPage.waitForLoadState('domcontentloaded')
     console.log('new page is ', await newPage.title())
 
     //await newPage.close()
+    await page.bringToFront()
+    await page.waitForLoadState('domcontentloaded')
 
     console.log('The current window now is ', await page.title())
 
@@ -41,8 +43,9 @@ test('Handling multi page using browser context', async({browser}) => {
 
     firstPage.bringToFront()
     await firstPage.locator('a[href="/products"]').click()
-    await firstPage.waitForLoadState()
+    await firstPage.waitForLoadState('domcontentloaded')
     console.log('First page title is ', await firstPage.title())
+    await secondPage.waitForLoadState('domcontentloaded')
     expect(firstPage).toHaveTitle('Automation Exercise - All Products')
     await firstPage.pause()
     await secondPage.pause()

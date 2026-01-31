@@ -9,8 +9,11 @@ test('Handling JavaScript standard Alerts', async ({ page }) => {
         expect(dialog.message()).toContain('I am a JS Alert');
         await dialog.accept();
     })
-
-    page.click('text=Click for JS Alert');
+    //page.once('dialog', dialog => dialog.accept());
+    // Wait for visibility before click
+    await page.waitForSelector('text=Click for JS Alert', { state: 'visible' });
+    await page.click('text=Click for JS Alert');
+    //page.click('text=Click for JS Alert');
     expect(page.getByText('You successfully clicked an alert')).toBeTruthy()
 
 })
