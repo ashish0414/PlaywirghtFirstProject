@@ -63,9 +63,10 @@ export class CheckboxDemoPage extends CommonPage {
 
     /** Toggle single checkbox (click once) */
     async toggleSingle() {
-        await this.singleCheckbox.click();
-        await this.page.waitForLoadState()
+        await this.singleCheckbox.waitFor({ state: 'visible' });
+        await this.singleCheckbox.click({ force: true });
     }
+      
 
     /**
      * Click a multiple checkbox by name
@@ -73,11 +74,13 @@ export class CheckboxDemoPage extends CommonPage {
      */
     async clickMultiCheckbox(optionName) {
         const checkbox = this.multipleSection.locator(`input[name="${optionName}"]`);
+        await checkbox.waitFor({ state: 'visible' });
         await checkbox.click();
     }
     
     /** Click "Uncheck All" button for multiple checkboxes */
     async uncheckAllMulti() {
+        await this.uncheckAllButton.waitFor({ state: 'visible' });
         await this.uncheckAllButton.click();
     }
 

@@ -11,9 +11,9 @@ test('Handling Downlaod Single file', async ({page}) =>{
 
     const [download] = await Promise.all([
         page.waitForEvent('download'),
-        page.getByRole('link', {name:'sample.pdf'}).first().click()
+        page.getByRole('link', {name:'sm.jpg'}).first().click()
     ])
-    expect(download.suggestedFilename()).toBe('sample.pdf')
+    expect(download.suggestedFilename()).toBe('sm.jpg')
     const suggestedFileName = download.suggestedFilename()
     const filePath = 'downloads/'+suggestedFileName
 
@@ -41,7 +41,7 @@ test('Handling Download Multiple file (download + inline)', async ({ page }) => 
   
     await page.goto('https://the-internet.herokuapp.com/download')
   
-    const files = ['sample.pdf', 'SomeFile.txt']
+    const files = ['sm.jpg', 'SomeFile.txt']
   
     for (const file of files) {
   

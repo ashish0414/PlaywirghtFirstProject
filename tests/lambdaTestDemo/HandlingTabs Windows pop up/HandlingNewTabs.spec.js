@@ -9,7 +9,7 @@ test('Handling new tabs', async({page, context}) => {
         page.getByRole('link', {name : 'Click Here'}).click()
     ])
     await newPage.waitForLoadState('domcontentloaded')
-    console.log('new page is ', await newPage.title())
+    console.log('new page is ', await newPage.title()) 
 
     //await newPage.close()
     await page.bringToFront()
