@@ -21,7 +21,10 @@ test('Handling new tabs', async({page, context}) => {
 })
 
 test('Handling multi page using browser context', async({browser}) => {
-    const firstContext = await browser.newContext()
+    const firstContext = await browser.newContext({
+        permissions: [],
+      });
+      
     const firstPage = await firstContext.newPage()
 
     await firstPage.goto('https://automationexercise.com/login')
@@ -31,7 +34,9 @@ test('Handling multi page using browser context', async({browser}) => {
     await firstPage.getByRole('button', { name: 'Login' }).click()
 
 
-    const secondContext = await browser.newContext()
+    const secondContext = await browser.newContext({
+        permissions: [],
+    });
     const secondPage = await secondContext.newPage()
 
     secondPage.goto('https://ecommerce-playground.lambdatest.io/index.php?route=account/login')
@@ -41,8 +46,12 @@ test('Handling multi page using browser context', async({browser}) => {
 
     await secondPage.getByRole('button', {name:'Login'}).click()
 
-    firstPage.bringToFront()
-    await firstPage.locator('a[href="/products"]').click()
+    //firstPage.bringToFront()
+    
+    await Promise.all([
+        firstPage.waitForURL('**/products'),
+        firstPage.locator('a[href="/products"]').click(),
+      ]);
     await firstPage.waitForLoadState('domcontentloaded')
     console.log('First page title is ', await firstPage.title())
     await secondPage.waitForLoadState('domcontentloaded')
