@@ -41,13 +41,13 @@ test('Handling Download Multiple file (download + inline)', async ({ page }) => 
   
     await page.goto('https://the-internet.herokuapp.com/download')
   
-    const files = ['sm.jpg', 'SomeFile.txt']
+    const files = ['sm.jpg', 'test.txt']
   
     for (const file of files) {
   
      const [download] = await Promise.all([
         page.waitForEvent('download'),
-        page.getByRole('link', {name : file}).click()
+        page.getByRole('link', {name : file}).first().click()
      ])
      const downloadedFilename = download.suggestedFilename()
      const filePath = path.join(downloadDir,downloadedFilename)
@@ -61,7 +61,7 @@ test('Handling Download Multiple file (download + inline)', async ({ page }) => 
             const content = fs.readFileSync(filePath, 'utf-8')
             expect(content.length).toBeGreaterThan(0)
             // optional exact match
-            expect(content).toContain('lah')
+            expect(content).toContain('Test my test file')
         }
     
         if (downloadedFilename.endsWith('.pdf')) {
