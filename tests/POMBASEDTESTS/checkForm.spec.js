@@ -7,5 +7,6 @@ test("should fill form successfully", async ({ page }) => {
   await formSubmitPage.fillForm("My Title", "My Message");
   await formSubmitPage.submitForm();
   await formSubmitPage.loaderVerification();
+  
   await formSubmitPage.processingMessageVerification();
 });

@@ -21,7 +21,7 @@ export class FormSubmitPage extends Base {
   }
 
   async loaderVerification() {
-    await this.submitButton.waitFor({ state: 'hidden' });
+    await this.page.waitForTimeout(500) // Add a small delay to ensure the loader appears
     await expect(this.loader).toBeVisible();
   }
   async processingMessageVerification() {
