@@ -21,8 +21,8 @@ export class FormSubmitPage extends Base {
   }
 
   async loaderVerification() {
-    
-    await expect(this.loader.locator('img')).toBeVisible();
+    await this.submitButton.waitFor({ state: 'hidden' });
+    await expect(this.loader).toBeVisible();
   }
   async processingMessageVerification() {
     await expect(this.loader).toContainText('Ajax Request is Processing!');

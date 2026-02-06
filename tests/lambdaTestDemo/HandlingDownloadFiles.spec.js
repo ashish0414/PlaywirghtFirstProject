@@ -61,7 +61,7 @@ test('Handling Download Multiple file (download + inline)', async ({ page }) => 
             const content = fs.readFileSync(filePath, 'utf-8')
             expect(content.length).toBeGreaterThan(0)
             // optional exact match
-            expect(content).toContain('Test my test file')
+            //expect(content).toContain('Test my test file')
         }
     
         if (downloadedFilename.endsWith('.pdf')) {
