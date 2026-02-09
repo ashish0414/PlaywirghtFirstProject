@@ -12,4 +12,16 @@ export class LoginPage extends CommonPage {
     await this.passwordInput.fill(password);
     await this.loginButton.click(); 
   }
+
+  async enterUsername(username) {
+    await this.usernameInput.fill(username);
+  }
+
+  async enterPassword(password) {
+    await this.passwordInput.fill(password);
+  }
+
+  async clickLoginButton() {
+    await this.loginButton.click();
+  }
 }
