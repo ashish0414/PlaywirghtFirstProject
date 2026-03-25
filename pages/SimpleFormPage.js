@@ -27,16 +27,19 @@ export class SimpleFormPage extends CommonPage {
   }
 
   async enterFirstValue(val) {
-    await this.firstValueInput.fill(val)
-  }
-  async enterSecondValue(val) {
-    await this.secondValueInput.fill(val)
+    await this.firstValueInput.fill(String(val));
   }
 
-  async clickGetSum() { 
-    await this.getSumButton.click() 
-  } 
-  async expectSum(val){ 
-    await expect(this.sumOutput).toHaveText(val) 
+  async enterSecondValue(val) {
+    await this.secondValueInput.fill(String(val));
+  }
+
+  async clickGetSum() {
+    await this.getSumButton.click();
+  }
+
+  async expectSum(val) {
+    await expect(this.sumOutput).toHaveText(String(val));
   }
 }
+

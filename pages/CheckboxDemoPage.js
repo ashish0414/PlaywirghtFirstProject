@@ -63,8 +63,8 @@ export class CheckboxDemoPage extends CommonPage {
 
     /** Toggle single checkbox (click once) */
     async toggleSingle() {
-        await this.singleCheckbox.waitFor({ state: 'visible' });
-        await this.singleCheckbox.click({ force: true });
+        await this.singleCheckboxLabel.waitFor({ state: 'visible' });
+        await this.singleCheckboxLabel.click();
     }
       
 
@@ -73,9 +73,10 @@ export class CheckboxDemoPage extends CommonPage {
      * @param {any} optionName
      */
     async clickMultiCheckbox(optionName) {
-        const checkbox = this.multipleSection.locator(`input[name="${optionName}"]`);
+        const labelText = 'Option ' + optionName.slice(6);
+        const checkbox = this.multipleSection.locator('label').filter({ hasText: labelText }).locator('input[type="checkbox"]');
         await checkbox.waitFor({ state: 'visible' });
-        await checkbox.click();
+        await checkbox.check();
     }
     
     /** Click "Uncheck All" button for multiple checkboxes */
@@ -117,7 +118,8 @@ export class CheckboxDemoPage extends CommonPage {
      * @param {string} optionName
      */
     async verifyMultiCheckOption(optionName) {
-        const checkbox = this.multipleSection.locator(`input[name="${optionName}"]`);
+        const labelText = 'Option ' + optionName.slice(6);
+        const checkbox = this.multipleSection.locator('label').filter({ hasText: labelText }).locator('input[type="checkbox"]');
         return await checkbox.isChecked();
     }
     
@@ -127,9 +129,12 @@ export class CheckboxDemoPage extends CommonPage {
      * @param {any} optionName
      */
     async setMultiCheckbox(optionName, checked = true) {
-        const checkbox = this.multipleCheckboxes.locator(`input[name="${optionName}"]`);
-        if ((await checkbox.isChecked()) !== checked) {
-            await checkbox.click();
+        const labelText = 'Option ' + optionName.slice(6);
+        const checkbox = this.multipleSection.locator('label').filter({ hasText: labelText }).locator('input[type="checkbox"]');
+        if (checked) {
+            await checkbox.check();
+        } else {
+            await checkbox.uncheck();
         }
     }
 
@@ -138,8 +143,10 @@ export class CheckboxDemoPage extends CommonPage {
         const count = await this.multipleCheckboxes.count();
         for (let i = 0; i < count; i++) {
             const box = this.multipleCheckboxes.nth(i);
-            if ((await box.isChecked()) !== checked) {
-                await box.click();
+            if (checked) {
+                await box.check();
+            } else {
+                await box.uncheck();
             }
         }
     }

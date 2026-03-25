@@ -4,7 +4,7 @@ import { CheckboxDemoPage } from '../../pages/CheckboxDemoPage';
 
 test('Single checkbox toggle', async ({ page }) => {
     const checkboxPage = new CheckboxDemoPage(page);
-    await checkboxPage.goto('https://www.lambdatest.com/selenium-playground/checkbox-demo');
+    await checkboxPage.goto('https://www.testmuai.com/selenium-playground/checkbox-demo');
 
     expect(await checkboxPage.isChecked('single')).toBeFalsy();
 
@@ -18,12 +18,12 @@ test('Single checkbox toggle', async ({ page }) => {
 
 test('Multiple checkbox selection', async ({ page }) => {
     const checkboxPage = new CheckboxDemoPage(page);
-    await checkboxPage.goto('https://www.lambdatest.com/selenium-playground/checkbox-demo');
+    await checkboxPage.goto('https://www.testmuai.com/selenium-playground/checkbox-demo');
 
     await checkboxPage.clickMultiCheckbox('option1');
     await checkboxPage.clickMultiCheckbox('option3');
 
-    //expect(await checkboxPage.verifyMultiCheckOption('option1')).toBeTruthy();
+    expect(await checkboxPage.verifyMultiCheckOption('option1')).toBeTruthy();
     expect(await checkboxPage.verifyMultiCheckOption('option2')).toBeFalsy();
     expect(await checkboxPage.verifyMultiCheckOption('option3')).toBeTruthy();
 

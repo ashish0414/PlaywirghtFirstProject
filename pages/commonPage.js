@@ -5,5 +5,6 @@ export class CommonPage {
 
   async goto(url) {
     await this.page.goto(url);
+    await this.page.waitForLoadState('networkidle');
   }
 }

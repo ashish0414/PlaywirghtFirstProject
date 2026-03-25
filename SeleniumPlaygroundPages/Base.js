@@ -1,4 +1,4 @@
-export class Base {
+class Base {
   constructor(page) {
     this.page = page;
   }
@@ -7,3 +7,5 @@ export class Base {
     await this.page.goto(url);
   }
 }
+
+module.exports = { Base };
